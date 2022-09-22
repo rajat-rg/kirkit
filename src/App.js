@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import Home from "./pages/Home";
+import News from "./pages/News";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Navbar/>
+    <Stack direction='row' spacing={1} divider={<Divider orientation="vertical" flexItem />}>
+      <Sidebar />
+      <Box sx={{minWidth:{xs:'100vw', md:'60vw'}}}>
+
+      <Routes>
+        <Route path="/" element={<Home/>}></Route>
+        <Route path="/news" element={<News/>}></Route>
+      </Routes>
+      </Box>
+    
+    <Typography variant='h3' sx={{minWidth:'20vw', display:{xs:'none', md:'block'}}}>galarry</Typography>
+
+    </Stack>
+    </>
   );
 }
 
