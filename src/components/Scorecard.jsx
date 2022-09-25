@@ -20,7 +20,7 @@ const Scorecard = ({ match }) => {
             {matchInfo?.team1?.teamSName}
           </Typography>
           <Typography variant="h5" component="div">
-            {matchScore?.team1Score?.inngs1?.runs}-{matchScore?.team1Score?.inngs1?.wickets} ({matchScore?.team1Score?.inngs1?.overs})
+            {matchScore?.team1Score?.inngs1?.runs}{matchScore?.team1Score?'-':''}{matchScore?.team1Score?.inngs1?.wickets} {matchScore?.team1Score?'(':''}{matchScore?.team1Score?.inngs1?.overs}{matchScore?.team1Score?')':''}
           </Typography>
         </Box>
 
@@ -29,7 +29,7 @@ const Scorecard = ({ match }) => {
             {matchInfo?.team2?.teamSName}
           </Typography>
           <Typography variant="h5" component="div">
-            {matchScore?.team2Score?.inngs1?.runs}-{matchScore?.team2Score?.inngs1?.wickets} ({matchScore?.team2Score?.inngs1?.overs})
+            {matchScore?.team2Score?.inngs1?.runs}{matchScore?.team2Score?'-':''}{matchScore?.team2Score?.inngs1?.wickets} {matchScore?.team2Score?'(':''}{matchScore?.team2Score?.inngs1?.overs}{matchScore?.team2Score?')':''}
           </Typography>
         </Box>
 
@@ -38,7 +38,7 @@ const Scorecard = ({ match }) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => { navigate(`/match/${matchInfo.matchId}`) }}>Full score</Button>
+        <Button size="small" color='success' onClick={() => { navigate(`/match/${matchInfo.matchId}`) }}>Full score</Button>
       </CardActions>
     </Card>
   )

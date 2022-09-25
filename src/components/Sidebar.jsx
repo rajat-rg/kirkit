@@ -5,18 +5,18 @@ import React, { useEffect, useState } from 'react'
 import newsCategory from '../utils/newsCategory.json'
 const Sidebar = () => {
   const [newsTopic, setNewsTopic] = useState([])
-  // useEffect(() => {
-  //   const getTopic = async () => {
-  //     const data = await axios.get('https://cricbuzz-cricket.p.rapidapi.com/news/v1/topics', {
-  //       headers: {
-  //         'X-RapidAPI-Key': 'f9e1c867f9msh14fa5acd59c8de5p18e24djsn6f64e5916cf5',
-  //         'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
-  //       }
-  //     })
-  //     setNewsTopic(data.data.topics.slice(0, 10))
-  //   }
-  //   getTopic()
-  // }, [])
+  useEffect(() => {
+    const getTopic = async () => {
+      const data = await axios.get('https://cricbuzz-cricket.p.rapidapi.com/news/v1/topics', {
+        headers: {
+          'X-RapidAPI-Key': 'f9e1c867f9msh14fa5acd59c8de5p18e24djsn6f64e5916cf5',
+          'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
+        }
+      })
+      setNewsTopic(data.data.topics.slice(0, 10))
+    }
+    getTopic()
+  }, [])
 
 
   return (
@@ -27,7 +27,7 @@ const Sidebar = () => {
       <><Typography variant='h6' color='text.primary'>News by category</Typography>
         {
           newsCategory.storyType.map(item => {
-            return <Box padding={0.7} marginY={0} ><Link to={`news/category/${item.id}`} style={{textDecoration:'none', color:'inherit'}} >
+            return <Box padding={0.7} marginY={0} key={item.name} ><Link to={`news/category/${item.id}`} style={{textDecoration:'none', color:'inherit'}} >
             <Typography variant='subtitle1' fontWeight={500} fontSize={14} color='text.secondary'>{item.name.toUpperCase()}</Typography>
           </Link></Box>
           })
@@ -37,7 +37,7 @@ const Sidebar = () => {
         {
 
           newsTopic.map(item => {
-            return <Box padding={0.7} marginY={0} ><Link to={`news/topic/${item.id}`} style={{textDecoration:'none', color:'inherit'}} >
+            return <Box padding={0.7} marginY={0} key={item.headline} ><Link to={`news/topic/${item.id}`} style={{textDecoration:'none', color:'inherit'}} >
             <Typography variant='subtitle1' fontWeight={500} fontSize={14} color='text.secondary' >{item.headline.toUpperCase()}</Typography>
           </Link></Box>
           })

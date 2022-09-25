@@ -3,7 +3,7 @@ import axios from "axios";
 export const MatchSlice = createSlice({
   name: "match",
   initialState: {
-    matches: { live: {}, recent: {}, upcoming: {} },
+    matches: { live: undefined, recent: undefined, upcoming: undefined },
     loading: false,
   },
   reducers: {},
@@ -13,10 +13,8 @@ export const MatchSlice = createSlice({
     });
     builder.addCase(getMatches.fulfilled, (state, action) => {
       state.loading = true;
-      console.log("payload", action.payload);
-
-      state.matches = action.payload;
-      console.log(state);
+      if(action.payload !== 1)
+      state.matches[action.payload[0]] = action.payload[1];
       state.loading = false;
     });
     builder.addCase(getMatches.rejected, (state, action) => {
@@ -26,24 +24,23 @@ export const MatchSlice = createSlice({
   },
 });
 
-export const getMatches = createAsyncThunk("match/getMatches", async () => {
-  const type = ["upcoming", "live", "recent"];
-  let matches = {};
-  type.forEach(async (e) => {
-    const { data } = await axios(
-      `https://cricbuzz-cricket.p.rapidapi.com/matches/v1/${e}`,
-      {
-        headers: {
-          "X-RapidAPI-Key":
-            "f9e1c867f9msh14fa5acd59c8de5p18e24djsn6f64e5916cf5",
-          "X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com",
-        },
-      }
-    );
-    matches[e] = data;
-    console.log(matches);
-  });
-  console.log("matches", matches);
-  return matches;
-});
+export const getMatches = createAsyncThunk(
+  "match/getMatches",
+  async ({ matchState: state, matchTime: type }) => {
+    if (state.matches[type] === undefined) {
+      const { data } = await axios(
+        `https://cricbuzz-cricket.p.rapidapi.com/matches/v1/${type}`,
+        {
+          headers: {
+            "X-RapidAPI-Key":
+              "f9e1c867f9msh14fa5acd59c8de5p18e24djsn6f64e5916cf5",
+            "X-RapidAPI-Host": "cricbuzz-cricket.p.rapidapi.com",
+          },
+        }
+      );
+      return [type, data];
+    }
+    return 1;
+  }
+);
 export default MatchSlice.reducer;

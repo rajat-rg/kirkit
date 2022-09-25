@@ -1,31 +1,31 @@
 import { Box, Button, ButtonGroup, Chip, Grid, Paper, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Scorecard from '../components/Scorecard'
 import { getMatches } from '../store/MatchSlice'
 
 
-
 import matchTypeFile from '../utils/matchType.json'
 const Home = () => {
-  // const dispatch = useDispatch()
-  // useEffect(() => {
-  //   console.log('dispatching')
-  //   dispatch(getMatches())
-  // }, [])
 
   const [matchTime, setMatchTime] = useState('live')
   const [matchType, setMatchType] = useState('International')
   const [matchesOfType, setMatchesOfType] = useState([])
-  const { typeMatches } = matchTypeFile;
+
+  const dispatch = useDispatch()
+  const matchState = useSelector(state => state.Match);
+  useEffect(() => {
+    dispatch(getMatches({ matchState, matchTime }))
+  }, [matchTime])
+
 
   useEffect(() => {
-    typeMatches.forEach(element => {
+    matchState?.matches[matchTime]?.typeMatches?.forEach(element => {
       if (element.matchType === matchType) {
         setMatchesOfType(element.seriesMatches)
       }
     });
-  }, [matchType, typeMatches])
+  }, [matchType, matchTime])
   return (
     <Paper elevation={0} sx={{ padding: '12px' }}>
       <Typography variant='h3'>Cricket Score</Typography>
@@ -41,16 +41,14 @@ const Home = () => {
           color='warning' value="upcoming">Upcoming</Button>
       </ButtonGroup>
       <Box sx={{ marginY: '12px' }}>
-        <Chip sx={{ marginRight: '12px' }} color='success' label="International" variant={`${matchType}` === 'International' ? 'filled' : 'outlined'} onClick={() => { setMatchType('International') }} />
-        <Chip sx={{ marginRight: '12px' }} color='success' label="League" variant={`${matchType}` === 'League' ? 'filled' : 'outlined'} onClick={() => { setMatchType('League') }} />
-        <Chip sx={{ marginRight: '12px' }} color='success' label="Domestic" variant={`${matchType}` === 'Domestic' ? 'filled' : 'outlined'} onClick={() => { setMatchType('Domestic') }} />
-        <Chip sx={{ marginRight: '12px' }} color='success' label="Women" variant={`${matchType}` === 'Women' ? 'filled' : 'outlined'} onClick={() => { setMatchType('Women') }} />
+        {matchState.matches[matchTime]?.filters.matchType.map(e => { return <Chip sx={{ marginRight: '12px' }} color='success' label={e} variant={`${matchType}` === `${e}` ? 'filled' : 'outlined'} onClick={() => { setMatchType(e) }} /> }
+        )}
       </Box>
       <Grid container spacing={4} wrap='wrap'>
-        {matchesOfType.length === 0 ? <Typography>No matches scheduled</Typography> :
+        {matchesOfType.length === 0 ? <Typography marginBottom={'2rem'}>No matches scheduled</Typography> :
           matchesOfType.map((item) => {
             return item?.seriesAdWrapper?.matches?.map(match => {
-              return <Grid item xs={12} md={6}><Scorecard match={match} /></Grid>
+              return <Grid item xs={12} md={6}><Scorecard match={match} key={match} /></Grid>
             })
 
           })
